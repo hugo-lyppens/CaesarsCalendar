@@ -98,13 +98,6 @@ namespace CaesarsCalendar
                     if (board.Fits(p, px, py))
                     {
                         board.Add(p, px, py);
-                        /*                        if (level == l - 1) {
-                        //                            Debug.WriteLine("Found Solution: " + String.Join(",", pieceIndices));
-                                                    Debug.WriteLine("Found Solution: " + board.ToString());
-                                                    board.Subtract(p, px, py);
-                                                    return true;
-                                                }
-                        */
                         pieceIndices[i] = pieceIndices[level];
                         pieceIndices[level] = pieceIndex;
                         var n = board.Next(x, y);

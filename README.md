@@ -1,4 +1,8 @@
+C# .NET Framework 4.8 Windows Forms app to show all solutions to the Caesar's Calendar puzzle. Example output:
 
+<img src="doc/Screenshot Caesar's Calendar.png" />
+
+At the bottom you see the total number of solutions found for the current combination of month, day and weekday. Double-clicking the next and previous buttons jump by 100 solutions.
 
 Includes Shim.System.Numerics by Kenichi Uda
 This package provides System.Numerics.BitOperations backport for .NET Standard 2.0.
