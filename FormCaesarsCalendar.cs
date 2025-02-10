@@ -10,7 +10,7 @@ namespace CaesarsCalendar
         private const int DoubleClickStepSize = 99;
         private CaesarsCalendarPuzzle caesarsCalendarPuzzle;
         private Bitmap bitmap;
-        List<List<Tuple<Piece, int, int>>> solutions;
+        List<(Piece, int, int)[]> solutions;
         int? solutionIndex;
         private static readonly int blockSize = 83;
         private static readonly int solutionX = 10;

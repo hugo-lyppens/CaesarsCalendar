@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -8,19 +7,18 @@ namespace CaesarsCalendar
 {
     public class Board
     {
-        private byte[] bits;
-        private List<Tuple<Piece,int,int>> pieces;
-
+        private readonly byte[] bits;
+        private readonly List<(Piece,int,int)> pieces;
         public readonly int width, height;
 
-        public List<Tuple<Piece, int, int>> Pieces { get => pieces; }
+        public List<(Piece, int, int)> Pieces { get => pieces; }
 
         public Board(byte[] bits, int w, int h)
         {
             this.bits = bits;
             this.width = w;
             this.height = h;
-            this.pieces=new List<Tuple<Piece,int,int>>();
+            this.pieces=new List<(Piece,int,int)>();
         }
 
         public Board Clone()
@@ -43,7 +41,7 @@ namespace CaesarsCalendar
             {
                 bits[y + py] |= (byte)(piece.bits[py] >> x);
             }
-            pieces.Add(Tuple.Create(piece, x, y));
+            pieces.Add((piece, x, y));
         }
         public void Subtract(Piece piece, int x, int y)
         {
@@ -51,7 +49,7 @@ namespace CaesarsCalendar
             {
                 bits[y + py] &= (byte)~(piece.bits[py] >> x);
             }
-            pieces.Remove(Tuple.Create(piece, x, y));
+            pieces.Remove((piece, x, y));
         }
         public override string ToString()
         {

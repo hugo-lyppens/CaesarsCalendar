@@ -9,11 +9,11 @@ namespace CaesarsCalendar
     {
         public CaesarsCalendarPuzzle()
         {
-            rotatedPiecesList = new List<Tuple<Piece, int, int>>[pieces.Length];
+            rotatedPiecesList = new List<(Piece, int, int)>[pieces.Length];
             for (int i = 0; i < pieces.Length; i++)
             {
                 var piece = pieces[i];
-                var rotatedPieces = new List<Tuple<Piece, int, int>>();
+                var rotatedPieces = new List<(Piece, int, int)>();
                 rotatedPiecesList[i] = rotatedPieces;
                 for (int d = 0; d < 4; d++)
                 {
@@ -22,7 +22,7 @@ namespace CaesarsCalendar
                         var r_piece = (m & 1) == 0 ? piece : piece.Mirror();
                         if (rotatedPieces.All(t => !t.Item1.Equals(r_piece)))
                         {
-                            rotatedPieces.Add(Tuple.Create(r_piece, d, m));
+                            rotatedPieces.Add((r_piece, d, m));
                             Debug.WriteLine(i + " " + d + " " + m + ": " + r_piece.offset);
                         }
                     }
@@ -60,10 +60,10 @@ namespace CaesarsCalendar
             new Piece(new byte[] {0b11100000,0b11000000 }),
             new Piece(new byte[] {0b01100000,0b11000000 })
         };
-        private List<Tuple<Piece, int, int>>[] rotatedPiecesList;
+        private List<(Piece, int, int)>[] rotatedPiecesList;
 
 
-        public List<List<Tuple<Piece, int, int>>> Solve(int month, int day, int weekday)
+        public List<(Piece, int, int)[]> Solve(int month, int day, int weekday)
         {
             Board board = emptyBoard.Clone();
             int daym1 = day - 1;
@@ -73,17 +73,17 @@ namespace CaesarsCalendar
             else
                 board.Set(weekday, 7);
             board.Set(daym1 % 7, 2 + (daym1) / 7);
-            List<List<Tuple<Piece, int, int>>> solutions = new List<List<Tuple<Piece, int, int>>>();
+            List<(Piece, int, int)[]> solutions = new List<(Piece, int, int)[]>();
             Solve(board, Enumerable.Range(0, pieces.Length).ToArray(), 0, board.Next(4, board.height - 1), solutions);
             return solutions;
         }
-        private bool Solve(Board board, int[] pieceIndices, int level, (int, int)? pos, List<List<Tuple<Piece, int, int>>> solutions)
+        private bool Solve(Board board, int[] pieceIndices, int level, (int, int)? pos, List<(Piece, int, int)[]> solutions)
         {
             int l = pieceIndices.Length;
             if (level == l)
             {
                 Debug.WriteLine("Found Solution: " + String.Join(",", pieceIndices));
-                solutions.Add(new List<Tuple<Piece, int, int>>(board.Pieces));
+                solutions.Add(board.Pieces.ToArray());
                 return true;
             }
             (int x, int y) = pos.Value;
