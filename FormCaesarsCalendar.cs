@@ -12,16 +12,23 @@ namespace CaesarsCalendar
         private Bitmap bitmap;
         List<(Piece, int, int)[]> solutions;
         int? solutionIndex;
-        private static readonly int blockSize = 83;
-        private static readonly int solutionX = 10;
-        private static readonly int solutionY = 10;
+        private  readonly int blockWidth,blockHeight;
+        private  readonly int solutionX;
+        private  readonly int solutionY;
 
         public FormCaesarsCalendar()
         {
             InitializeComponent();
             caesarsCalendarPuzzle = new CaesarsCalendarPuzzle();
-            bitmap = new Bitmap(blockSize * caesarsCalendarPuzzle.Width + solutionX, blockSize * caesarsCalendarPuzzle.Height + solutionY);
-
+            var width = pictureBoxPuzzle.Width;
+            var height = pictureBoxPuzzle.Height;
+            double scaleX = width / 600.0;
+            double scaleY = height / 687.0;
+            blockWidth = (int)(83.0 * scaleX);
+            blockHeight = (int)(83.0 * scaleY);
+            solutionX = (int)(10.0 * scaleX);
+            solutionY = (int)(10.0 * scaleY);
+            bitmap = new Bitmap(width, height);
             buttonClear_Click(null, null);
         }
 
@@ -52,9 +59,9 @@ namespace CaesarsCalendar
             using (var graphics = Graphics.FromImage(bitmap))
             {
                 graphics.Clear(TransparencyKey);
-                foreach (var p in solutions[solutionIndex.Value])
+                foreach ((var p,int x, int y) in solutions[solutionIndex.Value])
                 {
-                    p.Item1.Render(graphics, solutionX, solutionY, p.Item2, p.Item3, blockSize);
+                    p.Render(graphics, solutionX+x*blockWidth, solutionY+y*blockHeight, blockWidth, blockHeight);
                 }
             }
             pictureBoxPuzzle.Image = bitmap;

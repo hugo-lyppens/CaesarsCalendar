@@ -55,18 +55,6 @@ namespace CaesarsCalendar
         {
             return string.Join("|",pieces.Select(t=>$"{t.Item1}@({t.Item2},{t.Item3})"));
         }
-        public Bitmap Render(int x,int y,int blockSize)
-        {
-            var bmp = new Bitmap(blockSize*width+x, blockSize*height+y);
-            using (var graphics = Graphics.FromImage(bmp))
-            {
-                foreach(var p in pieces)
-                {
-                    p.Item1.Render(graphics, x,y,p.Item2, p.Item3, blockSize);
-                }
-            }
-            return bmp;
-        }
         public void Set(int x, int y)
         {
             bits[y] |= (byte)(0x80 >> x);

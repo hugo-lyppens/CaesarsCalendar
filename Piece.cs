@@ -72,7 +72,7 @@ namespace CaesarsCalendar
                     height == other.height;
         }
 
-        internal void Render(Graphics graphics, int left, int top, int x, int y, int blockSize)
+        internal void Render(Graphics graphics, int x, int y, int blockWidth, int blockHeight)
         {
             byte prevRow = 0;
             byte row = bits[0];
@@ -90,11 +90,11 @@ namespace CaesarsCalendar
                     bool nextBit = (row & bitMask) != 0;
                     if (bit)
                     {
-                        int x1 = left+(x + px) * blockSize;
-                        int x2 = x1 + blockSize;// -1;
-                        int y1=top+(y+py)* blockSize;
-                        int y2 = y1 + blockSize;// - 1;
-                        graphics.FillRectangle(pieceBrush, x1, y1, blockSize, blockSize);
+                        int x1 = x + px*blockWidth;
+                        int x2 = x1 + blockWidth;
+                        int y1 = y + py*blockHeight;
+                        int y2 = y1 + blockHeight;
+                        graphics.FillRectangle(pieceBrush, x1, y1, blockWidth, blockHeight);
                         if(!prevBit)
                             graphics.DrawLine(blackPen, x1, y1, x1, y2);
                         if(!nextBit)
