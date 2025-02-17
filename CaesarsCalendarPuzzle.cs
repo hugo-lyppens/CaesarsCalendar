@@ -100,12 +100,12 @@ namespace CaesarsCalendar
                         int py = y - p.height + 1;
                         if (board.Fits(p, px, py))
                         {
-                            board.Add(p, px, py);
+                            board.Push(p, px, py);
                             pieceCounts[pieceIndex] -= 1;
                             var n = board.Next(x, y);
 
                             b |= Solve(board, pieceCounts, level + 1, n, solutions);
-                            board.Subtract(p, px, py);
+                            board.Pop();
                             pieceCounts[pieceIndex] += 1;
                         }
                     }

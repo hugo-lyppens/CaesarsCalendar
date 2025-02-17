@@ -9,17 +9,17 @@ namespace CaesarsCalendar
     public class Board
     {
         private readonly byte[] bits;
-        private readonly List<(Piece,int,int)> pieces;
+        private readonly Stack<(Piece,int,int)> pieces;
         public readonly int width, height, openCount;
 
-        public List<(Piece, int, int)> Pieces { get => pieces; }
+        public Stack<(Piece, int, int)> Pieces { get => pieces; }
 
         public Board(byte[] bits, int w, int h)
         {
             this.bits = bits;
             this.width = w;
             this.height = h;
-            this.pieces=new List<(Piece,int,int)>();
+            this.pieces=new Stack<(Piece,int,int)>();
             this.openCount = bits.Aggregate(0, (a, b) => a + (8-BitOperations.PopCount(b)));
         }
 
@@ -37,21 +37,21 @@ namespace CaesarsCalendar
             }
             return true;
         }
-        public void Add(Piece piece, int x, int y)
+        public void Push(Piece piece, int x, int y)
         {
             for (int py = 0; py < piece.height; py++)
             {
                 bits[y + py] |= (byte)(piece.bits[py] >> x);
             }
-            pieces.Add((piece, x, y));
+            pieces.Push((piece, x, y));
         }
-        public void Subtract(Piece piece, int x, int y)
+        public void Pop()
         {
+            (Piece piece, int x, int y) = pieces.Pop();
             for (int py = 0; py < piece.height; py++)
             {
                 bits[y + py] &= (byte)~(piece.bits[py] >> x);
             }
-            pieces.Remove((piece, x, y));
         }
         public override string ToString()
         {
