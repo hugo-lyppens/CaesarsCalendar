@@ -68,7 +68,6 @@ namespace CaesarsCalendar
         public bool Equals(Piece other)
         {
             return !(other is null) &&
-//                       EqualityComparer<byte[]>.Default.Equals(bits, other.bits) &&
                     bits.SequenceEqual( other.bits) &&
                     width == other.width &&
                     height == other.height;

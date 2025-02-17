@@ -10,8 +10,8 @@ namespace CaesarsCalendar
     {
         private readonly byte[] bits;
         private readonly Stack<(Piece,int,int)> pieces;
-        public readonly int width, height, openCount;
-
+        public readonly int width, height;
+        public int OpenCount { get { return bits.Aggregate(0, (a, b) => a + (8 - BitOperations.PopCount(b))); } }
         public Stack<(Piece, int, int)> Pieces { get => pieces; }
 
         public Board(byte[] bits, int w, int h)
@@ -20,7 +20,6 @@ namespace CaesarsCalendar
             this.width = w;
             this.height = h;
             this.pieces=new Stack<(Piece,int,int)>();
-            this.openCount = bits.Aggregate(0, (a, b) => a + (8-BitOperations.PopCount(b)));
         }
 
         public Board Clone()
