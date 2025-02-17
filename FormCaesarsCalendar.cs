@@ -10,7 +10,7 @@ namespace CaesarsCalendar
         private const int DoubleClickStepSize = 99;
         private CaesarsCalendarPuzzle caesarsCalendarPuzzle;
         private Bitmap bitmap;
-        List<(Piece, int, int)[]> solutions;
+        (Piece, int, int)[][] solutions;
         int? solutionIndex;
         private  readonly int blockWidth,blockHeight;
         private  readonly int solutionX;
@@ -39,7 +39,7 @@ namespace CaesarsCalendar
             int day = (int)numericUpDownDay.Value;
             solutionIndex = null;
             solutions = caesarsCalendarPuzzle.Solve(month, day, weekday);
-            if (solutions?.Count > 0)
+            if (solutions?.Length > 0)
                 solutionIndex = 0;
             updateStatus();
         }
@@ -65,7 +65,7 @@ namespace CaesarsCalendar
                 }
             }
             pictureBoxPuzzle.Image = bitmap;
-            var n = solutions.Count;
+            var n = solutions.Length;
             toolStripStatusLabel.Text = $"{solutionIndex+1}/{n}";
             bool nf = solutionIndex > 0;
             bool nl = solutionIndex < n - 1;
@@ -159,7 +159,7 @@ namespace CaesarsCalendar
 
         private void toolStripNextButton_Click(object sender, EventArgs e)
         {
-            if (solutionIndex.HasValue&& solutions != null&&solutionIndex.Value<solutions.Count-1)
+            if (solutionIndex.HasValue&& solutions != null&&solutionIndex.Value<solutions.Length-1)
             {
                 solutionIndex++;
                 updateStatus();
@@ -169,7 +169,7 @@ namespace CaesarsCalendar
         {
             if (solutionIndex.HasValue&&solutions!=null)
             {
-                var n = solutions.Count;
+                var n = solutions.Length;
                 if (solutionIndex.Value < n - DoubleClickStepSize)
                     solutionIndex += DoubleClickStepSize;
                 else
@@ -191,7 +191,7 @@ namespace CaesarsCalendar
         {
             if (solutionIndex.HasValue&&solutions!=null)
             {
-                solutionIndex = solutions.Count - 1;
+                solutionIndex = solutions.Length - 1;
                 updateStatus();
             }
         }

@@ -12,6 +12,7 @@ namespace CaesarsCalendar
         public readonly byte[] bits;
         public readonly int hashCode;
         public readonly int width, height, offset;
+        public readonly int popCount;
         public Piece(byte[] bits, int w, int h)
         {
             this.bits = bits;
@@ -19,6 +20,7 @@ namespace CaesarsCalendar
             this.width = w;
             this.height = h;
             offset = BitOperations.LeadingZeroCount((uint)(bits.Last()) << 24);
+            this.popCount = bits.Aggregate(0, (a, b) => a + BitOperations.PopCount(b));
         }
 
         public Piece(byte[] bits): 

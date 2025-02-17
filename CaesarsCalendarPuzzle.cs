@@ -10,9 +10,12 @@ namespace CaesarsCalendar
         public CaesarsCalendarPuzzle()
         {
             rotatedPiecesList = new List<(Piece, int, int)>[pieces.Length];
+            int totalPiecesPopCount = 0;
             for (int i = 0; i < pieces.Length; i++)
             {
-                var piece = pieces[i];
+                (var piece, var count) = pieces[i];
+                totalPiecesPopCount += count * piece.popCount;
+
                 var rotatedPieces = new List<(Piece, int, int)>();
                 rotatedPiecesList[i] = rotatedPieces;
                 for (int d = 0; d < 4; d++)
@@ -29,6 +32,10 @@ namespace CaesarsCalendar
                     if (d < 3)
                         piece = piece.Rotate90();
                 }
+            }
+            if(totalPiecesPopCount+3!=emptyBoard.openCount)
+            {
+                throw new Exception($"Squares covered by available pieces {totalPiecesPopCount} is inconsistent with empty board open squares-3 {emptyBoard.openCount-3}");
             }
         }
         private static readonly int BoardWidth = 7;
@@ -47,23 +54,23 @@ namespace CaesarsCalendar
             0b00000001,
             0b11110001
         }, BoardWidth, BoardHeight);
-        private static readonly Piece[] pieces = new Piece[]
+        private static readonly (Piece, int)[] pieces = //new (Piece,uint)[]
         {
-            new Piece(new byte[] {0b10000000,0b11100000 }),
-            new Piece(new byte[] {0b11110000 }),
-            new Piece(new byte[] {0b10000000,0b11100000,0b10000000 }),
-            new Piece(new byte[] {0b11000000,0b10000000,0b11000000 }),
-            new Piece(new byte[] {0b00110000,0b11100000 }),
-            new Piece(new byte[] {0b10000000,0b11110000 }),
-            new Piece(new byte[] { 0b10000000, 0b10000000, 0b11100000 }),
-            new Piece(new byte[] {0b11000000,0b01000000,0b01100000 }),
-            new Piece(new byte[] {0b11100000,0b11000000 }),
-            new Piece(new byte[] {0b01100000,0b11000000 })
+            (new Piece(new byte[] {0b10000000,0b11100000 }),1),
+            (new Piece(new byte[] {0b11110000 }),1),
+            (new Piece(new byte[] {0b10000000,0b11100000,0b10000000 }),1),
+            (new Piece(new byte[] {0b11000000,0b10000000,0b11000000 }),1),
+            (new Piece(new byte[] {0b00110000,0b11100000 }),1),
+            (new Piece(new byte[] {0b10000000,0b11110000 }),1),
+            (new Piece(new byte[] { 0b10000000, 0b10000000, 0b11100000 }),1),
+            (new Piece(new byte[] {0b11000000,0b01000000,0b01100000 }),1),
+            (new Piece(new byte[] {0b11100000,0b11000000 }),1),
+            (new Piece(new byte[] {0b01100000,0b11000000 }),1)
         };
         private List<(Piece, int, int)>[] rotatedPiecesList;
 
 
-        public List<(Piece, int, int)[]> Solve(int month, int day, int weekday)
+        public (Piece, int, int)[][] Solve(int month, int day, int weekday)
         {
             Board board = emptyBoard.Clone();
             int daym1 = day - 1;
@@ -73,41 +80,41 @@ namespace CaesarsCalendar
             else
                 board.Set(weekday, 7);
             board.Set(daym1 % 7, 2 + (daym1) / 7);
-            List<(Piece, int, int)[]> solutions = new List<(Piece, int, int)[]>();
-            Solve(board, Enumerable.Range(0, pieces.Length).ToArray(), 0, board.Next(4, board.height - 1), solutions);
-            return solutions;
+            LinkedList<(Piece, int, int)[]> solutions = new LinkedList<(Piece, int, int)[]>();
+            Solve(board, pieces.Select(i=>(i.Item2)).ToArray(), 0, board.Next(4, board.height - 1), solutions);
+            return solutions.ToArray();
         }
-        private bool Solve(Board board, int[] pieceIndices, int level, (int, int)? pos, List<(Piece, int, int)[]> solutions)
+        private bool Solve(Board board, int[] pieceCounts, int level, (int, int)? pos, LinkedList<(Piece, int, int)[]> solutions)
         {
-            int l = pieceIndices.Length;
-            if (level == l)
-            {
-                Debug.WriteLine("Found Solution: " + String.Join(",", pieceIndices));
-                solutions.Add(board.Pieces.ToArray());
-                return true;
-            }
-            (int x, int y) = pos.Value;
+            bool allUsed = true;
             bool b = false;
-            for (int i = level; i < l; i++)
+            for (int pieceIndex=0; pieceIndex<pieceCounts.Length;pieceIndex++)
             {
-                int pieceIndex = pieceIndices[i];
-                foreach ((var p, int d, int m) in rotatedPiecesList[pieceIndex])
+                if (pieceCounts[pieceIndex] > 0)
                 {
-                    int px = x - p.offset;
-                    int py = y - p.height + 1;
-                    if (board.Fits(p, px, py))
+                    allUsed = false;
+                    foreach ((var p, int d, int m) in rotatedPiecesList[pieceIndex])
                     {
-                        board.Add(p, px, py);
-                        pieceIndices[i] = pieceIndices[level];
-                        pieceIndices[level] = pieceIndex;
-                        var n = board.Next(x, y);
+                        (int x, int y) = pos.Value;
+                        int px = x - p.offset;
+                        int py = y - p.height + 1;
+                        if (board.Fits(p, px, py))
+                        {
+                            board.Add(p, px, py);
+                            pieceCounts[pieceIndex] -= 1;
+                            var n = board.Next(x, y);
 
-                        b |= Solve(board, pieceIndices, level + 1, n, solutions);
-                        board.Subtract(p, px, py);
-                        pieceIndices[level] = pieceIndices[i];
-                        pieceIndices[i] = pieceIndex;
+                            b |= Solve(board, pieceCounts, level + 1, n, solutions);
+                            board.Subtract(p, px, py);
+                            pieceCounts[pieceIndex] += 1;
+                        }
                     }
                 }
+            }
+            if (allUsed) {
+                Debug.WriteLine("Found Solution: " + String.Join(",", board.Pieces));
+                solutions.AddLast(board.Pieces.ToArray());
+                return true;
             }
             return b;
         }

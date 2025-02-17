@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 namespace CaesarsCalendar
 {
@@ -9,7 +10,7 @@ namespace CaesarsCalendar
     {
         private readonly byte[] bits;
         private readonly List<(Piece,int,int)> pieces;
-        public readonly int width, height;
+        public readonly int width, height, openCount;
 
         public List<(Piece, int, int)> Pieces { get => pieces; }
 
@@ -19,6 +20,7 @@ namespace CaesarsCalendar
             this.width = w;
             this.height = h;
             this.pieces=new List<(Piece,int,int)>();
+            this.openCount = bits.Aggregate(0, (a, b) => a + (8-BitOperations.PopCount(b)));
         }
 
         public Board Clone()
