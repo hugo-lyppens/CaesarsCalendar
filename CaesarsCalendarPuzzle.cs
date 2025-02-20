@@ -100,22 +100,23 @@ namespace CaesarsCalendar
             }
 
             bool b = false;
+            int pieceIndex = pieceIndices[index];
             for (int i = index; i < n; i++)
             {
-                int pieceIndex = pieceIndices[i];
-                int pieceCount = pieceCounts[pieceIndex];
-                pieceCounts[pieceIndex]--;
+                int pieceI = pieceIndices[i];
+                int pieceCount = pieceCounts[pieceI];
+                pieceCounts[pieceI]--;
                 int newIndex = index;
                 if (pieceCount <= 1)
                 {
                     newIndex = index + 1;
                     if (i > index)
                     {
-                        pieceIndices[i] = pieceIndices[index];
-                        pieceIndices[index] = pieceIndex;
+                        pieceIndices[i] = pieceIndex;
+                        pieceIndices[index] = pieceI;
                     }
                 }
-                foreach ((var p, int d, int m) in rotatedPiecesList[pieceIndex])
+                foreach ((var p, int d, int m) in rotatedPiecesList[pieceI])
                 {
                     (int x, int y) = pos.Value;
                     int px = x - p.offset;
@@ -127,13 +128,13 @@ namespace CaesarsCalendar
                         board.Pop();
                     }
                 }
-                pieceCounts[pieceIndex]++;
+                pieceCounts[pieceI]++;
                 if (pieceCount <= 1)
                 {
                     if (i > index)
                     {
-                        pieceIndices[index] = pieceIndices[i];
-                        pieceIndices[i] = pieceIndex;
+                        pieceIndices[index] = pieceIndex;
+                        pieceIndices[i] = pieceI;
                     }
                 }
             }
