@@ -204,7 +204,7 @@
             // 
             this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(261, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(245, 17);
             this.toolStripStatusLabel1.Spring = true;
             // 
             // toolStripFirstButton
@@ -278,8 +278,10 @@
             // 
             this.toolStripStatusLabel2.BackColor = System.Drawing.SystemColors.Control;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(261, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(245, 17);
             this.toolStripStatusLabel2.Spring = true;
+            this.toolStripStatusLabel2.Text = "by Hugo Lyppens";
+            this.toolStripStatusLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // FormCaesarsCalendar
             // 
